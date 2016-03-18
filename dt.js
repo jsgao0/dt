@@ -1,6 +1,5 @@
 (function () {
     var dateTime = {
-        ref: this,
         time: {
             year: 0,
             month: 0,
@@ -9,7 +8,13 @@
             minute: 0,
             second: 0
         },
-        init: function () {
+        init: function (callback, interval) {
+            setInterval(function () {
+                dateTime.update();
+                callback();
+            }, interval)
+        },
+        update: function () {
             var date = new Date();
             dateTime.time.year = date.getFullYear();
             dateTime.time.month = date.getMonth() + 1;
@@ -20,17 +25,23 @@
         },
         getDate: function (format) {
             if (typeof format !== 'string') return;
-            var dateReg = new RegExp("yyyy(/|-)*mm(/|-)dd");
+            var dateReg = new RegExp("(yyyy(/|-))*mm(/|-)dd");
             if (format.match() != null)
                 return format
                     .replace("yyyy", dateTime.time.year)
                     .replace("mm", dateTime.time.month)
                     .replace("dd", dateTime.time.date);
+        },
+        getTime: function (format) {
+            if (typeof format !== 'string') return;
+            var dateReg = new RegExp("hh:mm:ss");
+            if (format.match() != null)
+                return format
+                    .replace("hh", dateTime.time.hour)
+                    .replace("mm", dateTime.time.minute)
+                    .replace("ss", dateTime.time.second);
         }
     };
-    dateTime.init();
-    setInterval(function () {
-        dateTime.init();
-    }, 1000)
+
     window.dt = dateTime;
 })(window);
